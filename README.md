@@ -36,3 +36,21 @@ Kita juga dapat mengubah port dari client dengan mengubah potongan kode dibawah 
 ClientBuilder::from_uri(Uri::from_static("ws://127.0.0.1:8080"))
 ```
 Walaupun portnya diubah dari 2000 menjadi 8080, fungsionalitas program masih sama yaitu ketika satu client mengirimkan pesan ke server, maka server akan mengirimkan pesan tersebut ke seluruh client yang sedang terhubung ke server tersebut, hanya saja yang berbeda adalah server dan client melakukan pengiriman dan penerimaan data melalui port 8080, tidak melalui port 2000 lagi.
+
+## 2.3 Small Changes, Add Some Information to Client
+- Server
+![Servernya](image-6.png)
+
+- Client
+![Client 1](image-7.png)
+![Client 2](image-8.png)
+
+Disini, ketika kita mengirimkan pesan dari client ke server, server kemudian akan mengirimkan pesan ke seluruh client dengan format {IP Client} : {Pesan}. Untuk dapat melakukan hal ini, saya melakukan modifikasi di bagian server.rs pada bagian kode 
+```
+bcast_tx.send(text.into())?;
+```
+menjadi seperti berikut ini
+```
+bcast_tx.send(format!("{addr} : {text}"))?;
+```
+Modifikasi kode sebagai berikut akan mengirimkan data ke seluruh client dengan format {addr pengirim} : {text}
